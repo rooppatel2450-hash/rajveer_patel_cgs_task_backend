@@ -1,47 +1,23 @@
 version: '3.8'
 
 services:
-  # PostgreSQL Database
-  postgres:
-    image: postgres:15-alpine
-    container_name: postgres_db
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: myapp
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    networks:
-      - app-network
-
   # Backend API
   backend:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: backend_api
-    depends_on:
-      postgres:
-        condition: service_healthy
     ports:
       - "3000:3000"
     environment:
       NODE_ENV: production
       PORT: 3000
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/myapp
-      DB_USER: postgres
-      DB_PASSWORD: postgres
-      DB_HOST: postgres
+      DATABASE_URL: postgresql://rajveer:RYUiFj0ywuMHbSK64voxVuBNAczwo5RU@dpg-d847e20g4nts73euu48g-a.oregon-postgres.render.com/myapp_oqzr
+      DB_USER: rajveer
+      DB_PASSWORD: RYUiFj0ywuMHbSK64voxVuBNAczwo5RU
+      DB_HOST: dpg-d847e20g4nts73euu48g-a.oregon-postgres.render.com
       DB_PORT: 5432
-      DB_NAME: myapp
+      DB_NAME: myapp_oqzr
       FRONTEND_URL: http://localhost:5173
       JWT_SECRET: your_jwt_secret_key_change_this
     volumes:
@@ -66,9 +42,6 @@ services:
     networks:
       - app-network
     restart: unless-stopped
-
-volumes:
-  postgres_data:
 
 networks:
   app-network:
